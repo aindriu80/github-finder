@@ -13,6 +13,7 @@ function UserSearch() {
     if (text === '') {
       alert('Please enter a text')
     } else {
+      console.log('users:', users)
       searchUsers(text)
       setText('')
     }
