@@ -15,7 +15,6 @@ function UserSearch() {
     if (text === '') {
       setAlert('Please enter something', 'error')
     } else {
-      console.log('users:', users)
       searchUsers(text)
       setText('')
     }
