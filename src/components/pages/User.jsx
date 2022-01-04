@@ -5,17 +5,24 @@ import Spinner from '../../components/layout/Spinner'
 import { useParams } from 'react-router-dom'
 import GithubContext from '../../context/github/GithubContext'
 import RepoList from '../../components/repos/RepoList'
+import { getUser, getUserRepos } from '../../context/github/GithubActions'
 
 function User() {
-  const { getUser, user, loading, getUserRepos, repos } =
-    useContext(GithubContext)
+  const { user, loading, repos, dispatch } = useContext(GithubContext)
 
   const params = useParams()
 
   useEffect(() => {
-    getUser(params.login)
-    getUserRepos(params.login)
-  }, [])
+    dispatch({ type: 'SET_LOADING' })
+    const getUserData = async () => {
+      const userData = await getUser(params.login)
+      dispatch({ type: 'GET_USER', payload: userData })
+
+      const userRepoData = await getUserRepos(params.login)
+      dispatch({ type: 'GET_REPOS', payload: userData })
+    }
+    getUserData()
+  }, [dispatch, params.login])
 
   const {
     name,
@@ -134,23 +141,23 @@ function User() {
             </div>
           </div>
 
-        <div className="stat">
+          <div className="stat">
             <div className="stat-figure text-secondary">
-            <FaCodepen className="text-3xl md:text-5xl" />
+              <FaCodepen className="text-3xl md:text-5xl" />
+            </div>
+            <div className="stat-title pr-5">Public Repos</div>
+            <div className="stat-value pr-5 text-3xl md:text-4xl">
+              {public_repos}
+            </div>
           </div>
-          <div className="stat-title pr-5">Public Repos</div>
-          <div className="stat-value pr-5 text-3xl md:text-4xl">
-            {public_repos}
-          </div>
-        </div>
 
-        <div className="stat">
+          <div className="stat">
             <div className="stat-figure text-secondary">
-            <FaStore className="text-3xl md:text-5xl" />
-          </div>
+              <FaStore className="text-3xl md:text-5xl" />
+            </div>
             <div className="stat-title pr-5">Public Gists</div>
-          <div className="stat-value pr-5 text-3xl md:text-4xl">
-            {public_gists}
+            <div className="stat-value pr-5 text-3xl md:text-4xl">
+              {public_gists}
             </div>
           </div>
         </div>
